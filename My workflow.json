@@ -1,0 +1,254 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "DeliveryDelay",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "8c7336f3-285f-4e63-935d-f9bb72815f63",
+      "name": "Webhook",
+      "webhookId": "38c2e349-0268-4e56-9b70-35348ff77f25"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Connect to Logistics MCP Client Tool: execute_route – the payload is:\n{\n  \"route_id\": \"{{ $json.body.route_id }}\",\n  \"truck_id\": \"{{ $json.body.truck_id }}\",\n  \"chosen_option\": {\n    \"option_id\": \"{{ $json.body.chosen_option.option_id }}\",\n    \"route_number\": {{ $json.body.chosen_option.route_number }},\n    \"distance_miles\": {{ $json.body.chosen_option.distance_miles }},\n    \"eta_minutes\": {{ $json.body.chosen_option.eta_minutes }}\n  }\n} \n\nConnect to Retail MCP Client Tool: notify_delivery_delay – the payload is:’\n{\n  \"route_id\": \"{{ $json.body.route_id }}\",\n  \"truck_id\": \"{{ $json.body.truck_id }}\",\n  \"chosen_option\": {\n    \"option_id\": \"{{ $json.body.chosen_option.option_id }}\",\n    \"route_number\": {{ $json.body.chosen_option.route_number }},\n    \"distance_miles\": {{ $json.body.chosen_option.distance_miles }},\n    \"eta_minutes\": {{ $json.body.chosen_option.eta_minutes }}\n  }\n} \nConnect to ServiceNow MCP Client Tool: update_execution_status – the payload is:\n{\n  \"route_id\": \"{{ $json.body.route_id }}\",\n  \"status\": \"dispatched\"\n}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "da80ec1f-6b62-44e6-8877-9fc377569434",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "openai.gpt-oss-20b-1:0",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAwsBedrock",
+      "typeVersion": 1.1,
+      "position": [
+        96,
+        256
+      ],
+      "id": "328f305e-ac0f-4f15-9dea-d0ac2b56ea14",
+      "name": "AWS Bedrock Chat Model",
+      "credentials": {
+        "aws": {
+          "id": "i8F1tk1uHmiLFoB8",
+          "name": "AWS account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "endpointUrl": "http://34.197.44.143:8001/mcp",
+        "include": "selected",
+        "includeTools": [
+          "execute_route"
+        ],
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.2,
+      "position": [
+        256,
+        256
+      ],
+      "id": "6ad45a66-aaf4-471b-94ef-19a39f410019",
+      "name": "Logistics MCP Client"
+    },
+    {
+      "parameters": {
+        "endpointUrl": "http://34.197.44.143:8002/mcp",
+        "include": "selected",
+        "includeTools": [
+          "notify_delivery_delay"
+        ],
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.2,
+      "position": [
+        416,
+        256
+      ],
+      "id": "c09ae556-d76d-40cf-99a5-9867297ff75e",
+      "name": "Retail MCP Client"
+    },
+    {
+      "parameters": {
+        "endpointUrl": "http://34.197.44.143:8000/mcp",
+        "authentication": "bearerAuth",
+        "include": "selected",
+        "includeTools": [
+          "update_execution_status"
+        ],
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.2,
+      "position": [
+        576,
+        256
+      ],
+      "id": "b48aad30-9684-4b2c-9134-f2935fe23989",
+      "name": "ServiceNow MCP Client",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "ptSdpbFL0BCxJNtV",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        560,
+        0
+      ],
+      "id": "9b2eba38-8afc-4046-ad1c-3536be203a41",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "raymondrickettskuralabs.app.n8n.cloud",
+            "user-agent": "ServiceNow/1.0",
+            "content-length": "133",
+            "accept": "application/json",
+            "accept-encoding": "gzip, br",
+            "cdn-loop": "cloudflare; loops=1; subreqs=1",
+            "cf-connecting-ip": "4.223.224.92",
+            "cf-ew-via": "15",
+            "cf-ipcountry": "SE",
+            "cf-ray": "98b0225062dc13b8-ARN",
+            "cf-visitor": "{\"scheme\":\"https\"}",
+            "cf-worker": "n8n.cloud",
+            "content-type": "application/json",
+            "x-forwarded-for": "4.223.224.92, 104.23.223.19",
+            "x-forwarded-host": "raymondrickettskuralabs.app.n8n.cloud",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "traefik-prod-users-gwc-5-6fbf5bdbfc-mn9tr",
+            "x-is-trusted": "yes",
+            "x-real-ip": "4.223.224.92",
+            "x-snc-integration-source": "558d1433c322a650d7299dcd2b0131af"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "route_id": "305647",
+            "truck_id": "9739",
+            "chosen_option": {
+              "option_id": "opt-3",
+              "route_number": 5,
+              "distance_miles": 139,
+              "eta_minutes": 250
+            }
+          },
+          "webhookUrl": "https://raymondrickettskuralabs.app.n8n.cloud/webhook-test/DeliveryDelay",
+          "executionMode": "test"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AWS Bedrock Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Logistics MCP Client": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retail MCP Client": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ServiceNow MCP Client": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ac474748-15aa-4e5d-a211-380debd61591",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "399932663e8bd082a4e4f3bc7be1fd4b489fc1ef9a39ed8d6c834d3a856247a2"
+  },
+  "id": "aiAzVDodku3Y9KDQ",
+  "tags": []
+}
