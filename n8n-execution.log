@@ -1,0 +1,68 @@
+{
+  "headers": {
+    "host": "raymondrickettskuralabs.app.n8n.cloud",
+    "user-agent": "ServiceNow/1.0",
+    "content-length": "133",
+    "accept": "application/json",
+    "accept-encoding": "gzip, br",
+    "cdn-loop": "cloudflare; loops=1; subreqs=1",
+    "cf-connecting-ip": "4.223.224.92",
+    "cf-ew-via": "15",
+    "cf-ipcountry": "SE",
+    "cf-ray": "98b0225062dc13b8-ARN",
+    "cf-visitor": "{\"scheme\":\"https\"}",
+    "cf-worker": "n8n.cloud",
+    "content-type": "application/json",
+    "x-forwarded-for": "4.223.224.92, 104.23.223.19",
+    "x-forwarded-host": "raymondrickettskuralabs.app.n8n.cloud",
+    "x-forwarded-port": "443",
+    "x-forwarded-proto": "https",
+    "x-forwarded-server": "traefik-prod-users-gwc-5-6fbf5bdbfc-mn9tr",
+    "x-is-trusted": "yes",
+    "x-real-ip": "4.223.224.92",
+    "x-snc-integration-source": "558d1433c322a650d7299dcd2b0131af"
+  },
+  "params": {},
+  "query": {},
+  "body": {
+    "route_id": "305647",
+    "truck_id": "9739",
+    "chosen_option": {
+      "option_id": "opt-3",
+      "route_number": 5,
+      "distance_miles": 139,
+      "eta_minutes": 250
+    }
+  },
+  "webhookUrl": "https://raymondrickettskuralabs.app.n8n.cloud/webhook-test/DeliveryDelay",
+  "executionMode": "test"
+}
+
+Human: Connect to Logistics MCP Client Tool: execute_route – the payload is:
+{
+  "route_id": "305647",
+  "truck_id": "9739",
+  "chosen_option": {
+    "option_id": "opt-3",
+    "route_number": 5,
+    "distance_miles": 139,
+    "eta_minutes": 250
+  }
+} 
+
+Connect to Retail MCP Client Tool: notify_delivery_delay – the payload is:’
+{
+  "route_id": "305647",
+  "truck_id": "9739",
+  "chosen_option": {
+    "option_id": "opt-3",
+    "route_number": 5,
+    "distance_miles": 139,
+    "eta_minutes": 250
+  }
+} 
+Connect to ServiceNow MCP Client Tool: update_execution_status – the payload is:
+{
+  "route_id": "305647",
+  "status": "dispatched"
+}
